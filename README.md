@@ -2,7 +2,7 @@
 
 <div align="left">
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=38BDF8&width=580&lines=Flutter+%26+Mobile+App+Engineer;Full-Stack+TypeScript+%26+React+Developer;Creator+of+caveman-plus+%26+adaptive_image_picker;Architect+%26+Developer+of+CV+Bucket" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=38BDF8&width=620&lines=Flutter+%26+Mobile+App+Engineer;Full-Stack+TypeScript+%26+React+Architect;AI+Integration+%26+Multi-Model+LLM+Pipelines;Creator+of+caveman-plus+%26+adaptive_image_picker;Architect+%26+Developer+of+CV+Bucket" alt="Typing SVG" />
   </a>
 </div>
 
@@ -18,7 +18,52 @@
 
 ## ⚡ Featured Project Spotlights
 
-### 📸 1. [adaptive_image_picker](https://github.com/Karan8686/adaptive_image_picker) — Zero-Permission Media Picker & Cropper
+### 📄 1. [CV Bucket](https://github.com/usesinspiration-ship-it/Cv_bucket) — Multi-Model AI Resume Indexing Platform
+> **Sole Architect & Full-Stack Developer**  
+> An intelligent resume parsing, indexing, and search engine built with **React 19**, **Express**, **Supabase (PostgreSQL)**, and **Cloudflare R2**. Features a resilient **OCR fallback layer** and a **3-Tier AI model pipeline** (Groq $\to$ Gemini Vision $\to$ Local Regex) to parse digital, scanned, and Canva resumes with zero data loss.
+
+#### ☁️ End-to-End System & AI Architecture
+```mermaid
+flowchart TD
+    User([Recruiter / Candidate]) -->|Upload PDF, DOCX, or Scanned CV| UI[React 19 + Tailwind CSS]
+    UI -->|Multipart Upload Stream + Auth| API[Express TypeScript Backend]
+    
+    API -->|Async Binary Storage| R2[(Cloudflare R2 Object Storage)]
+    API --> Extractor{Format & Text Layer Check}
+    
+    Extractor -->|DOCX / DOC| DocParser[mammoth / word-extractor]
+    Extractor -->|Digital PDF| PDFParser[pdfjs-dist Text Engine]
+    
+    PDFParser --> Check{Sparse / Image-Only PDF?<br/>&lt; 250 chars / 40 words}
+    Check -->|No| AI_Tiers
+    Check -->|Yes: Canva / Scanned| OCR[OCR.space Dual Engine<br/>Engine 2 with Engine 1 Failover]
+    
+    OCR --> OCR_Check{OCR Extracted Text?}
+    OCR_Check -->|Yes| AI_Tiers
+    OCR_Check -->|No| Tier2_Vision
+    
+    subgraph AI_Tiers ["3-Tier Multi-AI Intelligence Pipeline"]
+        Tier1[Tier 1: High-Throughput LLMs via Groq<br/>gpt-oss-120b / gpt-oss-20b]
+        Tier2_Vision[Tier 2: Gemini Multimodal Vision<br/>gemini-3.5-flash Native PDF Vision]
+        Tier3[Tier 3: Local Deterministic Engine<br/>Offline RegEx / NLP Fallback]
+        
+        Tier1 -->|Fallback on Rate Limit/Error| Tier2_Vision
+        Tier2_Vision -->|Fallback on Failure| Tier3
+    end
+    
+    DocParser --> AI_Tiers
+    
+    AI_Tiers --> Normalizer[Data Normalization & Null Sanitization]
+    Normalizer --> Dedupe{SHA-256 Hash Deduplication}
+    Dedupe --> DB[(Supabase PostgreSQL<br/>Indexed Records + Full-Text Search)]
+    
+    UI -->|Real-Time Candidate Search| FTS[PostgreSQL FTS Query Engine]
+    FTS --> DB
+```
+
+---
+
+### 📸 2. [adaptive_image_picker](https://github.com/Karan8686/adaptive_image_picker) — Zero-Permission Media Picker & Cropper
 > **Published Flutter / Dart Package** on [pub.dev](https://pub.dev/packages/adaptive_image_picker)  
 > Solves traditional storage permission issues by pairing native zero-permission system pickers with a pure-Dart interactive cropper and binary-search file compressor.
 
@@ -49,7 +94,7 @@ flowchart LR
 
 ---
 
-### 🪨 2. [caveman-plus](https://github.com/Karan8686/caveman-plus) — AI Token Compression Engine
+### 🪨 3. [caveman-plus](https://github.com/Karan8686/caveman-plus) — AI Token Compression Engine
 > **Published npm Package & CLI** • [Try the Live Interactive Playground →](https://karan8686.github.io/caveman-plus/)  
 > Programmatic text compression engine for LLMs and AI pipelines. Strips 40–70% of redundant tokens while preserving 100% of code, errors, and technical meaning.
 
@@ -67,28 +112,6 @@ flowchart LR
     Guard -->|No| Engine[Pattern Normalizer & Filler Stripper]
     Raw --> Output[Compressed Stream / Payload<br/>40-70% Cost Reduction]
     Engine --> Output
-```
-
----
-
-### 📄 3. [CV Bucket](https://github.com/usesinspiration-ship-it/Cv_bucket) — Full-Stack Resume Platform
-> **Sole Architect & Lead Developer**  
-> End-to-end full-stack candidate indexing and search engine built with **React 19**, **Express**, **Cloudflare R2**, and **Firestore**.
-
-#### ☁️ Cloud Architecture & Data Flow
-```mermaid
-flowchart TD
-    User([Recruiter / User]) -->|Upload PDF Resume| UI[React 19 + Tailwind UI]
-    UI -->|Multipart Stream + JWT Auth| API[Express TypeScript Backend]
-    
-    API -->|1. Store Raw PDF| R2[Cloudflare R2 Object Storage]
-    API -->|2. Extract Text & Metadata| Parser[pdf-parse Engine]
-    
-    Parser -->|3. Structured Fields| Data[(Cloud Firestore DB)]
-    
-    UI -->|Instant Search Query| SearchService[Server-Side Fuzzy Search]
-    SearchService -->|Fuse.js Multi-Match| Data
-    Data -->|Filtered Candidates| UI
 ```
 
 ---
@@ -128,12 +151,22 @@ flowchart TD
     </td>
   </tr>
   <tr>
-    <td align="center"><strong>Backend, Cloud & APIs</strong></td>
+    <td align="center"><strong>AI & LLM Pipelines</strong></td>
     <td>
+      <img src="https://img.shields.io/badge/Google_Gemini_Vision-8E75C2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini" />
+      <img src="https://img.shields.io/badge/Groq_LLMs-F55036?style=for-the-badge&logo=fastapi&logoColor=white" alt="Groq" />
+      <img src="https://img.shields.io/badge/OCR.space-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white" alt="OCR" />
+      <img src="https://img.shields.io/badge/Prompt_Engineering-333333?style=for-the-badge&logo=openai&logoColor=white" alt="Prompts" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Backend, Cloud & Database</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+      <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+      <img src="https://img.shields.io/badge/Cloudflare_R2-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" />
       <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
       <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
-      <img src="https://img.shields.io/badge/Cloudflare_R2-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" />
-      <img src="https://img.shields.io/badge/Firebase_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
       <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
     </td>
   </tr>
